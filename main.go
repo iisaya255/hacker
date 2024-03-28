@@ -42,7 +42,7 @@ func generateTimeStr(num int) string {
 	return timeStamp
 }
 
-func add() {
+func gitAdd() {
 	s := []string {"git", "add", "hacker.txt"}
 	res, err := exec_shell(s...)
 	if err != nil {
@@ -50,7 +50,7 @@ func add() {
 	}
 }
 
-func commit(timeStr string) {
+func gitCommit(timeStr string) {
 	str := time.Now().Format("Mon Jan 2 15:04:05 2006")
 	s := []string {"git", "commit", "-m", "\"" + str + "\"", 
 	""}
@@ -61,31 +61,33 @@ func commit(timeStr string) {
 	}
 }
 
-func push() {
+func gitPush() {
 	s := []string {"git", "push"}
 	res, err := exec_shell(s...)
 	if err != nil {
-		fmt.Print("push fail:", err, res)
+		fmt.Print("push fail, please push by your self, detail:\n", err, res)
 	}
 }
 
 func gitProcess(i int) {
 	writeFile()
-	add()
+	gitAdd()
 	s := generateTimeStr(i) 
-	commit(s)
+	gitCommit(s)
 }
 
 func main()  {
-	for i := 0; i <= 365; i++ {
-		if rand.Intn(100) > 70 {
+	rate := 60
+	doManyCommitsRate := 30
+	for i := 365; i >= 0; i-- {
+		if rand.Intn(100) > rate {
 			gitProcess(i)
-			if rand.Intn(100) > 42 {
-				for t := 0; t < rand.Intn(10); t ++ {
+			if rand.Intn(100) > doManyCommitsRate {
+				for t := 0; t < rand.Intn(5); t ++ {
 					gitProcess(i)
 				}
 			}
 		}
 	}
-	push()	
+	gitPush()	
 }
